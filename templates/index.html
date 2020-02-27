@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ url_for('static',filename='favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-    <title>{{ name }}的电影列表</title>
+    <title>{{ user.name }}的电影列表</title>
 </head>
 <body>
     <h2>
         <img class="avatar" src="{{ url_for('static',filename='images/4.jpg') }}" alt="头像">
-        {{ name }}的电影列表
+        {{ user.name }}的电影列表
     </h2>
     {# length过滤器 #}
     <p>{{ movies|length }}</p>
@@ -19,7 +19,8 @@
         <li>{{ movie.title }} - {{ movie.year }}</li>
         {% endfor %}
     </ul>
-    <footer>&copy;<a href="http://www.baidu.com">百度</a></footer>
     <img class="hulu" src="{{ url_for('static',filename='images/5.jpg') }}" alt="">
+    <footer>&copy;<a href="http://www.baidu.com">百度</a></footer>
+    
 </body>
 </html>
