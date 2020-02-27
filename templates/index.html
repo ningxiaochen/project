@@ -2,12 +2,14 @@
 
 {% block content %}
 <p>{{ movies|length }} Titles</p>
-
+{# 表单 #}
+{% if current_user.is_authenticated %}
 <form method="POST">
     电影名 <input type="text" name="title" autocomplete="off" required>
     年份 <input type="text" name="year" autocomplete="off" required>
     <input type="submit" class="btn" name="submit" value="添加">
 </form>
+{% endif %}
 
 <ul class="movie-list">
     {% for movie in movies %}
@@ -18,7 +20,7 @@
                 href="http://v.baidu.com/v?word={{ movie.title }}&ct=301989888&rn=67&pn=0&db=0&s=0&fbl=800&ie=utf-8&oq=nnkd&f=3&rsp=0"
                 target="_blank" title="在百度视频中查找此电影">百度视频</a>
         </span>
- 
+        {% if current_user.is_authenticated %}
         <span class="float-right">
             <a class="btn" href="{{ url_for('edit',movie_id=movie.id) }}">编辑</a>
         </span>
@@ -27,7 +29,7 @@
                 <input class="btn" type="submit" name='delete' value="删除" onclick="return confirm('确定删除吗？')">
             </form>
         </span>
-    
+        {% endif %}
     </li>
     {% endfor %}
 </ul>

@@ -29,6 +29,10 @@ def load_user(user_id):   # 创建用户加载回调函数，接受用户ID作�
     user = User.query.get(int(user_id))
     return user
 
+#
+login_manager.login_view = 'login'
+login_manager.login_message = "没有登录"
+
 # 创建数据库模型类
 class User(db.Model,UserMixin):
     id = db.Column(db.Integer,primary_key=True) # 主键
@@ -100,26 +104,33 @@ def admin(username,password):
     db.session.commit()
     click.echo('创建管理员账号完成')
 
-
-@app.route('/', methods=['GET','POST'])
+# 首页
+@app.route('/',methods=['GET','POST'])
 def index():
     if request.method == 'POST':
+        if not current_user.is_authenticated:
+            return redirect(url_for('index'))
+        # 获取表单的数据
         title = request.form.get('title')
         year = request.form.get('year')
+
+        # 验证title，year不为空，并且title长度不大于60，year的长度不大于4
         if not title or not year or len(year)>4 or len(title)>60:
-            flash('输入错误')
-            return redirect(url_for('index'))
-        movie = Movie(title=title,year=year)
-        db.session.add(movie)
-        db.session.commit()
-        flash('数据插入成功')
+            flash('输入错误')  # 错误提示
+            return redirect(url_for('index'))  # 重定向回主页
+        
+        movie = Movie(title=title,year=year)  # 创建记录
+        db.session.add(movie)  # 添加到数据库会话
+        db.session.commit()   # 提交数据库会话
+        flash('数据创建成功')
         return redirect(url_for('index'))
-    
+
     movies = Movie.query.all()
     return render_template('index.html',movies=movies)
 
 # 编辑电影信息页面
 @app.route('/movie/edit/<int:movie_id>',methods=['GET','POST'])
+@login_required
 def edit(movie_id):
     movie = Movie.query.get_or_404(movie_id)
 
@@ -138,8 +149,26 @@ def edit(movie_id):
         return redirect(url_for('index'))
     return render_template('edit.html',movie=movie)
 
+@app.route('/settings',methods=['GET','POST'])
+@login_required
+def settings():
+    if request.method == 'POST':
+        name = request.form['name']
+
+        if not name or len(name)>20:
+            flash('输入错误')
+            return redirect(url_for('settings'))
+        
+        current_user.name = name
+        db.session.commit()
+        flash('设置name成功')
+        return redirect(url_for('index'))
+
+    return render_template('settings.html')
+
 # 删除信息
 @app.route('/movie/delete/<int:movie_id>',methods=['POST']) 
+@login_required
 def delete(movie_id):
     movie = Movie.query.get_or_404(movie_id)
     db.session.delete(movie)
