@@ -1,26 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ url_for('static',filename='favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
-    <title>{{ user.name }}的电影列表</title>
-</head>
-<body>
-    <h2>
-        <img class="avatar" src="{{ url_for('static',filename='images/4.jpg') }}" alt="头像">
-        {{ user.name }}的电影列表
-    </h2>
-    {# length过滤器 #}
-    <p>{{ movies|length }}</p>
-    <ul class='movie-list'>
-        {% for movie in movies %}
-        <li>{{ movie.title }} - {{ movie.year }}</li>
-        {% endfor %}
-    </ul>
-    <img class="hulu" src="{{ url_for('static',filename='images/5.jpg') }}" alt="">
-    <footer>&copy;<a href="http://www.baidu.com">百度</a></footer>
-    
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<p>{{ movies|length }} Titles</p>
+<ul class="movie-list">
+    {% for movie in movies %}
+    <li>
+        {{ movie.title }} - {{ movie.year }}
+        <span class="float-right">
+            <a class="vbd"
+                href="http://v.baidu.com/v?word={{ movie.title }}&ct=301989888&rn=67&pn=0&db=0&s=0&fbl=800&ie=utf-8&oq=nnkd&f=3&rsp=0"
+                target="_blank" title="在百度视频中查找此电影">百度视频</a>
+        </span>
+    </li>
+    {% endfor %}
+</ul>
+
+<img class="hulu" src="{{ url_for('static',filename='images/5.jpg') }}" alt="">
+{% endblock %}
