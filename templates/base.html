@@ -18,14 +18,18 @@
     {% endfor %}
     <h2>
         <img class="avatar" src="{{ url_for('static',filename='images/4.jpg') }}" alt="头像">
-        {{ user.name }}'s 电影列表
+        {{ user.name }} 电影列表
     </h2>
     <nav>
         <ul>
             <li>
                 <a href="{{ url_for('index') }}">首页</a>
             </li>
-            
+            <li style="float: right">
+                <a href="{{ url_for('login') }}">登录</a>
+                <a href="{{ url_for('logout') }}">退出</a>
+
+            </li>
         </ul>
     </nav>
     {% block content %} {% endblock %}
